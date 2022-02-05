@@ -1,0 +1,51 @@
+body {
+    background-color: #fefff8;
+}
+
+.toc {
+    top: 7rem;
+    bottom: 14rem;
+    width: 22%;
+    position: fixed;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.toc li {
+    padding-bottom: 0.3em;
+}
+.toc ol {
+    counter-reset: item1;
+    list-style-type: none;
+    padding-left: 0;
+}
+.toc ol li {
+    counter-increment: item1;
+}
+.toc ol li::before {
+    content: counter(item1) ". ";
+    font-weight: bold;
+}
+.toc ol ol {
+    counter-reset: item2;
+    list-style-type: none;
+    padding-left: 1em;
+}
+.toc ol ol li {
+    counter-increment: item2;
+}
+.toc ol ol li::before {
+    content: counter(item1) "." counter(item2) ". ";
+    font-weight: bold;
+}
+.toc ol ol ol {
+    counter-reset: item3;
+    list-style-type: none;
+    padding-left: 1em;
+}
+.toc ol ol ol li {
+    counter-increment: item3;
+}
+.toc ol ol ol li::before {
+    content: counter(item1) "." counter(item2) "." counter(item3)  ". ";
+    font-weight: bold;
+}
