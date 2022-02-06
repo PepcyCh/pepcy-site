@@ -1,5 +1,7 @@
+mod utils;
 mod blog;
 mod single;
+mod new;
 
 fn main() {
     let args: Vec<_> = std::env::args().collect();
@@ -9,6 +11,9 @@ fn main() {
 
         blog::gen_mds("../markdowns/note", "../generated/note");
         println!("note - done!");
+
+        blog::gen_mds("../markdowns/acgn", "../generated/acgn");
+        println!("acgn - done!");
 
         single::gen_md("../markdowns/about.md", "../generated/about.html");
         println!("about - done!");
@@ -22,6 +27,15 @@ fn main() {
         if args[1] == "clean" {
             std::fs::remove_dir_all("../generated/algo/").unwrap();
             std::fs::remove_dir_all("../generated/note/").unwrap();
+            std::fs::remove_file("../generated/about.html").unwrap();
+            std::fs::remove_file("../generated/resume.html").unwrap();
+            std::fs::remove_file("../generated/404.html").unwrap();
+        } else {
+            println!("unknown command line args");
+        }
+    } else if args.len() == 4 {
+        if args[1] == "new" {
+            new::new_md(format!("../markdowns/{}", args[2]).as_str(), args[3].as_str());
         } else {
             println!("unknown command line args");
         }

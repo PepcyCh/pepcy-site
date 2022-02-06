@@ -10,6 +10,7 @@ mod home;
 
 mod algo;
 mod note;
+mod acgn;
 
 mod about;
 mod resume;
@@ -30,6 +31,12 @@ pub enum MainRoute {
     Note,
     #[at("/note/tags/:s")]
     NoteTags,
+    #[at("/acgn")]
+    AcgnDefault,
+    #[at("/acgn/:s")]
+    Acgn,
+    #[at("/acgn/tags/:s")]
+    AcgnTags,
     #[at("/about")]
     About,
     #[at("/resume")]
@@ -48,6 +55,9 @@ fn main_switch(routes: &MainRoute) -> Html {
         },
         MainRoute::NoteDefault | MainRoute::Note | MainRoute::NoteTags => html! {
             <Switch<note::BlogRoute> render={Switch::render(note::blog_switch)} />
+        },
+        MainRoute::AcgnDefault | MainRoute::Acgn | MainRoute::AcgnTags => html! {
+            <Switch<acgn::BlogRoute> render={Switch::render(acgn::blog_switch)} />
         },
         MainRoute::About => html! { <about::About /> },
         MainRoute::Resume => html! { <resume::Resume /> },

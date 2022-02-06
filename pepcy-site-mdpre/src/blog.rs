@@ -4,6 +4,8 @@ use std::{
     io::{self, Read, Write},
 };
 
+use crate::utils::*;
+
 #[derive(Debug, Default, Clone, serde::Serialize, serde::Deserialize)]
 struct BlogHeader {
     title: String,
@@ -12,6 +14,15 @@ struct BlogHeader {
     part: String,
     create_time: i64,
     last_modified: i64,
+    #[serde(default)]
+    hidden: bool,
+    #[serde(default)]
+    order: usize,
+}
+
+#[derive(Debug, Default)]
+struct BlogHeaderExtra {
+    no_toc: bool,
 }
 
 #[derive(Debug, serde::Serialize)]
@@ -50,8 +61,9 @@ struct Cache {
     next_tag_id: u64,
 }
 
-fn parse_header(headre_str: &str) -> BlogHeader {
+fn parse_header(headre_str: &str) -> (BlogHeader, BlogHeaderExtra) {
     let mut header = BlogHeader::default();
+    let mut extra = BlogHeaderExtra::default();
 
     for info in headre_str
         .replace("---", "")
@@ -82,84 +94,20 @@ fn parse_header(headre_str: &str) -> BlogHeader {
                         .unwrap()
                         .timestamp();
             }
+            "hidden" => {
+                header.hidden = true;
+            }
+            "order" => {
+                header.order = usize::from_str_radix(data, 10).unwrap_or(0);
+            }
+            "no_toc" => {
+                extra.no_toc = true;
+            }
             _ => {}
         }
     }
 
-    header
-}
-
-lazy_static::lazy_static! {
-    static ref MARKDOWN_OPTS: comrak::ComrakOptions = {
-        let extension = comrak::ComrakExtensionOptions {
-            table: true,
-            header_ids: Some("".to_owned()),
-            ..Default::default()
-        };
-        let render = comrak::ComrakRenderOptions {
-            unsafe_: true,
-            ..Default::default()
-        };
-        comrak::ComrakOptions { extension, parse: Default::default(), render }
-    };
-    static ref KATEX_OPTS: katex::Opts = katex::Opts::builder().display_mode(true).build().unwrap();
-    static ref TIMEZONE: chrono::FixedOffset = chrono::FixedOffset::east(8 * 3600);
-}
-
-struct MathBlockReplacer;
-
-impl regex::Replacer for MathBlockReplacer {
-    fn replace_append(&mut self, caps: &regex::Captures<'_>, dst: &mut String) {
-        if dst.chars().filter(|ch| *ch == '`').count() % 2 == 1 {
-            dst.push_str(caps.get(0).unwrap().as_str());
-            return;
-        }
-        let content = caps.get(1).unwrap().as_str();
-        let math_html = match katex::render_with_opts(content, KATEX_OPTS.as_ref()) {
-            Ok(html) => html,
-            Err(err) => {
-                println!(
-                    "[WARN] math block \"{}\" failed to be processed, err: {}",
-                    content,
-                    err.to_string()
-                );
-                content.to_owned()
-            }
-        };
-        dst.push_str(format!("<p class='katex-block'>{}</p>", math_html).as_str());
-    }
-}
-
-struct InlineMathReplacer;
-
-impl regex::Replacer for InlineMathReplacer {
-    fn replace_append(&mut self, caps: &lazy_regex::Captures<'_>, dst: &mut String) {
-        if dst.chars().filter(|ch| *ch == '`').count() % 2 == 1 {
-            dst.push_str(caps.get(0).unwrap().as_str());
-            return;
-        }
-        let content = caps.get(1).unwrap().as_str();
-        let math_html = match katex::render(content) {
-            Ok(html) => html,
-            Err(err) => {
-                println!(
-                    "[WARN] inline math \"{}\" failed to be processed, err: {}",
-                    content,
-                    err.to_string()
-                );
-                content.to_owned()
-            }
-        };
-        dst.push_str(&math_html);
-    }
-}
-
-struct FilenameReplacer;
-
-impl regex::Replacer for FilenameReplacer {
-    fn replace_append(&mut self, _caps: &lazy_regex::Captures<'_>, dst: &mut String) {
-        dst.push('-');
-    }
+    (header, extra)
 }
 
 fn parse_markdown(markdown_str: &str) -> (String, String) {
@@ -321,9 +269,9 @@ pub fn gen_mds(src_dir: &str, dst_dir: &str) {
             let header_end_pos = content.match_indices("---").nth(1).unwrap().0 + 3;
             let (header, content) = content.split_at(header_end_pos);
 
-            let mut header = parse_header(header);
+            let (mut header, header_extra) = parse_header(header);
             let (html, part) = parse_markdown(content);
-            let toc = gen_toc_html(&html);
+            let toc = if header_extra.no_toc { "".to_owned() } else { gen_toc_html(&html) };
             let blog = Blog {
                 title: &header.title,
                 tags: &header.tags,
@@ -371,9 +319,17 @@ pub fn gen_mds(src_dir: &str, dst_dir: &str) {
             cache.blogs.get(&filename).unwrap().header.clone()
         };
 
-        blogs.push(header);
+        if !header.hidden {
+            blogs.push(header);
+        }
     }
-    blogs.sort_by(|a, b| b.create_time.cmp(&a.create_time));
+    blogs.sort_by(|a, b| {
+        if a.order != b.order {
+            b.order.cmp(&a.order)
+        } else {
+            b.create_time.cmp(&a.create_time)
+        }
+    });
 
     // title lists
     let _page_count = gen_lists(&blogs, 10, dst_dir);

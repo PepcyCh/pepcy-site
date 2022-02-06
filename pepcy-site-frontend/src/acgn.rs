@@ -8,16 +8,16 @@ use crate::{
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum BlogRoute {
-    #[at("/note")]
+    #[at("/acgn")]
     DefaultPage,
-    #[at("/note/:s")]
+    #[at("/acgn/:s")]
     Page { s: String },
-    #[at("/note/tags")]
+    #[at("/acgn/tags")]
     Tags,
-    #[at("/note/tags/:tag")]
+    #[at("/acgn/tags/:tag")]
     TagPage { tag: String },
     #[not_found]
-    #[at("/note/404")]
+    #[at("/acgn/404")]
     NotFound,
 }
 
@@ -60,7 +60,7 @@ pub fn blog_switch(route: &BlogRoute) -> Html {
                     <Link<MainRoute> to={MainRoute::Home}>
                         <strong>{ "Pepcy" }</strong>
                     </Link<MainRoute>>
-                    <span>{ " | 博客-笔记" }</span>
+                    <span>{ " | 博客-ACGN" }</span>
                 </div>
                 <a role="button" class="navbar-burger" data-target="blogsNavbar"
                     id="blogsNavbarBurger" onclick={nav_burger_onclick}>
@@ -71,10 +71,10 @@ pub fn blog_switch(route: &BlogRoute) -> Html {
             </div>
             <div id="blogsNavbar" class="navbar-menu">
                 <div class="navbar-start">
-                    <Link<BlogRoute> to={BlogRoute::DefaultPage} classes="navbar-item">
+                    <a href="/acgn" class="navbar-item">
                         <span class="material-icons">{ "home" }</span>
                         <span>{ "首页" }</span>
-                    </Link<BlogRoute>>
+                    </a>
                     <Link<BlogRoute> to={BlogRoute::Tags} classes="navbar-item">
                         <span class="material-icons">{ "sell" }</span>
                         <span>{ "标签" }</span>
@@ -126,7 +126,7 @@ impl Component for BlogPage {
 
         ctx.link().send_future(async move {
             let text =
-                match reqwasm::http::Request::get(format!("/generated/note/{}.json", s).as_str())
+                match reqwasm::http::Request::get(format!("/generated/acgn/{}.json", s).as_str())
                     .send()
                     .await
                 {
@@ -176,7 +176,7 @@ impl Component for BlogPage {
                                 .map(|tag| {
                                     let tag_url = utils::percent_encode(tag);
                                     html! {
-                                        <a href={format!("/note/tags/{}", tag_url)} class="tag is-success is-light">
+                                        <a href={format!("/acgn/tags/{}", tag_url)} class="tag is-success is-light">
                                         { tag }
                                         </a>
                                     }
@@ -238,7 +238,7 @@ impl Component for BlogList {
 
         ctx.link().send_future(async move {
             let text = match reqwasm::http::Request::get(
-                format!("/generated/note/_page{}.json", page).as_str(),
+                format!("/generated/acgn/_page{}.json", page).as_str(),
             )
             .send()
             .await
@@ -289,7 +289,7 @@ impl Component for BlogList {
                         let article: BlogHeader = serde_json::from_value(article.clone()).unwrap();
                         html!{
                             <div class="box"><div class="content">
-                                <h2><a href={format!("/note/{}", article.url)}>{
+                                <h2><a href={format!("/acgn/{}", article.url)}>{
                                     article.title
                                 }</a></h2>
                                 {
@@ -305,7 +305,7 @@ impl Component for BlogList {
                                         .map(|tag| {
                                             let tag_url = utils::percent_encode(tag);
                                             html! {
-                                                <a href={format!("/note/tags/{}", tag_url)} class="tag is-success is-light">
+                                                <a href={format!("/acgn/tags/{}", tag_url)} class="tag is-success is-light">
                                                 { tag }
                                                 </a>
                                             }
@@ -321,7 +321,7 @@ impl Component for BlogList {
             }
             </div>
             <div class="block">
-            { utils::pagination_nav(self.page, total_page_count as u32, "/note") }
+            { utils::pagination_nav(self.page, total_page_count as u32, "/acgn") }
             </div>
             </>
         }
@@ -345,7 +345,7 @@ impl Component for BlogTags {
 
     fn create(ctx: &Context<Self>) -> Self {
         ctx.link().send_future(async move {
-            let text = match reqwasm::http::Request::get("/generated/note/_tag.json")
+            let text = match reqwasm::http::Request::get("/generated/acgn/_tag.json")
             .send()
             .await
             {
@@ -393,7 +393,7 @@ impl Component for BlogTags {
                         let tag_url = utils::percent_encode(&tag.name);
                         html!{
                             <span class="card p-3 m-1" style="line-height: 4rem">
-                                <a href={format!("/note/tags/{}", tag_url)}>
+                                <a href={format!("/acgn/tags/{}", tag_url)}>
                                 { format!("{} ({})", tag.name, tag.count) }
                                 </a>
                             </span>
@@ -433,7 +433,7 @@ impl Component for BlogTagPage {
 
         ctx.link().send_future(async move {
             let text = match reqwasm::http::Request::get(
-                format!("/generated/note/_tag_{}.json", tag_file).as_str()
+                format!("/generated/acgn/_tag_{}.json", tag_file).as_str()
             )
             .send()
             .await
@@ -484,7 +484,7 @@ impl Component for BlogTagPage {
                             serde_json::from_value(article.clone()).unwrap();
                         html!{
                             <div class="box">
-                                <a href={format!("/note/{}", article.url)}>
+                                <a href={format!("/acgn/{}", article.url)}>
                                     <strong>{ article.title }</strong>
                                 </a>
                             </div>

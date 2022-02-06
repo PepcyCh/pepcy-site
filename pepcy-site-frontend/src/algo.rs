@@ -36,17 +36,34 @@ pub fn blog_switch(route: &BlogRoute) -> Html {
         BlogRoute::NotFound => html! { <Redirect<MainRoute> to={MainRoute::NotFound} /> },
     };
 
+    let nav_burger_onclick = Callback::from(|_| {
+        let doc = web_sys::window().unwrap().document().unwrap();
+        if let Some(nav) = doc.get_element_by_id("blogsNavbar") {
+            let burger = doc.get_element_by_id("blogsNavbarBurger").unwrap();
+            let nav_list = nav.class_list();
+            let burger_list = burger.class_list();
+            if nav_list.contains("is-active") {
+                nav_list.remove_1("is-active").unwrap();
+                burger_list.remove_1("is-active").unwrap();
+            } else {
+                nav_list.add_1("is-active").unwrap();
+                burger_list.add_1("is-active").unwrap();
+            }
+        }
+    });
+
     html! {
         <>
         <nav class="navbar is-info" role="navigation">
             <div class="navbar-brand">
-                <div class="block mx-4 my-auto">
+                <div class="navbar-item">
                     <Link<MainRoute> to={MainRoute::Home}>
                         <strong>{ "Pepcy" }</strong>
                     </Link<MainRoute>>
                     <span>{ " | 博客-OI/*CPC" }</span>
                 </div>
-                <a role="button" class="navbar-burger" data-target="blogsNavbar">
+                <a role="button" class="navbar-burger" data-target="blogsNavbar"
+                    id="blogsNavbarBurger" onclick={nav_burger_onclick}>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
@@ -63,8 +80,8 @@ pub fn blog_switch(route: &BlogRoute) -> Html {
                         <span>{ "标签" }</span>
                     </Link<BlogRoute>>
                 </div>
-            </div>
-            <div class="navbar-end">
+                <div class="navbar-end">
+                </div>
             </div>
         </nav>
         <section class="section">
@@ -170,12 +187,20 @@ impl Component for BlogPage {
                     </div>
                 </div>
                 <div class="column">
-                    <div class="box toc">
-                        <div class="block"><h2 class="subtitle is-4">
-                        { "目录" }
-                        </h2></div>
-                        <RawHtml html_str={blog.toc} />
-                    </div>
+                {
+                    if blog.toc.is_empty() {
+                        html! {}
+                    } else {
+                        html! {
+                            <div class="box toc">
+                                <div class="block"><h2 class="subtitle is-4">
+                                { "目录" }
+                                </h2></div>
+                                <RawHtml html_str={blog.toc} />
+                            </div>
+                        }
+                    }
+                }
                 </div>
             </div>
             </div>

@@ -1,7 +1,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{algo, note, utils::RawHtml, MainRoute};
+use crate::{acgn, algo, note, utils::RawHtml, MainRoute};
 
 #[function_component(Home)]
 pub fn home() -> Html {
@@ -20,6 +20,14 @@ pub fn home() -> Html {
         let onclick = Callback::once(move |_| history.push(note::BlogRoute::DefaultPage));
         html! {
             <button {onclick} class="button mr-3">{ "笔记" }</button>
+        }
+    };
+
+    let acgn_button = {
+        let history = history.clone();
+        let onclick = Callback::once(move |_| history.push(acgn::BlogRoute::DefaultPage));
+        html! {
+            <button {onclick} class="button mr-3">{ "ACGN" }</button>
         }
     };
 
@@ -70,7 +78,7 @@ pub fn home() -> Html {
                                     </div>
                                 </div>
                                 <hr />
-                                <h2 class="subtitle is-5">{ "CG / CS / 前 OIer & *CPCer" }</h2>
+                                <h2 class="subtitle is-5">{ "CG / ACGN / 前 OIer & *CPCer" }</h2>
                             </div>
                         </div>
                     </div>
@@ -82,6 +90,7 @@ pub fn home() -> Html {
                     <div class="message-body">
                         { algo_button }
                         { note_button }
+                        { acgn_button }
                     </div>
                 </div>
                 <div class="block message is-info">
