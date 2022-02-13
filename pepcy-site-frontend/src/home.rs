@@ -108,7 +108,7 @@ pub fn home() -> Html {
                     </div>
                     <div class="message-body">
                         <button class="button mr-3">
-                            <a href="http://pepcy.cf/icpc-templates">{ "*CPC 算法模板" }</a>
+                            <a href="http://pepcy.top/icpc-templates">{ "*CPC 算法模板" }</a>
                         </button>
                     </div>
                 </div>
