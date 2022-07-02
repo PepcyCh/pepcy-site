@@ -1,8 +1,8 @@
 # 陈昱文
 
-邮箱：pepcych@zju.edu.cn / pepsich86@163.com
+邮箱：pepsich86@163.com / pepcych@zju.edu.cn
 
-Github：https://github.com/PepcyCh
+Github：[https://github.com/PepcyCh](https://github.com/PepcyCh)
 
 ## 技能
 
@@ -21,6 +21,11 @@ Github：https://github.com/PepcyCh
 
 * 本科 - 浙江大学 - 计算机科学与技术 （2018.9-2022.6）
   * 总均绩 4.51/5，主修课均绩 4.75/5，保研绩点排名 7/187
+  * 浙江省政府奖学金一次
+  * 浙江大学二等奖学金一次，浙江大学三等奖学金两次
+* 硕士 - 浙江大学 - 计算机科学与技术（2022.9-2025.3）（预计）
+  * 导师：CAD&CG 国家重点实验室，王锐
+
 
 ## 实习经历
 
@@ -50,3 +55,6 @@ Github：https://github.com/PepcyCh
   * 实现了 mipmap、SAH、微表面材质、多重重要性采样、均匀介质、BSSRDF 材质、Catmull-Clark 细分物体渲染等内容
   * 复现 SIGGRAPH 2016 论文《Position-Normal Distributions for Efficient Rendering of Specular Microstructure》
   * 部分复现论文《Direct Ray Tracing of Full-Featured Subdivision Surfaces with Bézier Clipping》
+* [ReSTIR-OptiX](https://github.com/PepcyCh/ReSTIR-OptiX)
+  * 复现论文《Spatiotemporal Reservoir Resampling for Real-Time Ray Tracing with Dynamic Direct Lighting》
+  * 使用 OptiX，以 glTF 为读入

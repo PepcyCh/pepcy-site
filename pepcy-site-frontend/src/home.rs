@@ -72,7 +72,7 @@ pub fn home() -> Html {
                                             <a href="https://www.zhihu.com/people/pepcy-chen">{ "知乎" }</a>
                                         </span>
                                         <span class="mx-2">
-                                            <a href="https://space.bilibili.com/23236522">{ "bilibili" }</a>
+                                            <a href="https://bgm.tv/user/551240">{ "bangumi" }</a>
                                         </span>
                                         </div>
                                     </div>
