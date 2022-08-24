@@ -15,7 +15,7 @@ Github：[https://github.com/PepcyCh](https://github.com/PepcyCh)
   * 学习和使用过 Unity 3D 与 UE4，开发过小 demo
 * 外语
   * 英语 - CET6 513/710
-  * 日语 - JLPT N2 140/180
+  * 日语 - JLPT N1 111/180，JLPT N2 140/180
 
 ## 教育经历
 
@@ -33,6 +33,9 @@ Github：[https://github.com/PepcyCh](https://github.com/PepcyCh)
   * 修改 RenderDoc 集成 malioc
   * UE4 美术资产辅助检查工具
   * UE4 统计工具 bug 检查修复及增强
+* 酷家乐 - 科研算法见习生（2022.6.13-2022.8.24）
+  * HPG 2021 与 SIGGRAPH 2022 上两个算法的调研、接入与实现优化
+
 
 ## 获得奖励
 
