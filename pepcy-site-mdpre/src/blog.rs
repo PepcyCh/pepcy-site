@@ -61,11 +61,11 @@ struct Cache {
     next_tag_id: u64,
 }
 
-fn parse_header(headre_str: &str) -> (BlogHeader, BlogHeaderExtra) {
+fn parse_header(header_str: &str) -> (BlogHeader, BlogHeaderExtra) {
     let mut header = BlogHeader::default();
     let mut extra = BlogHeaderExtra::default();
 
-    for info in headre_str
+    for info in header_str
         .replace("---", "")
         .trim()
         .split('\n')
@@ -98,7 +98,7 @@ fn parse_header(headre_str: &str) -> (BlogHeader, BlogHeaderExtra) {
                 header.hidden = true;
             }
             "order" => {
-                header.order = usize::from_str_radix(data, 10).unwrap_or(0);
+                header.order = usize::from_str_radix(data.trim(), 10).unwrap_or(0);
             }
             "no_toc" => {
                 extra.no_toc = true;
